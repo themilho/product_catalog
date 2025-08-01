@@ -1,4 +1,3 @@
-import { fi } from "zod/v4/locales"
 import {prisma} from "../lib/prisma"
 import { productInput } from "../schema/productSchema"
 

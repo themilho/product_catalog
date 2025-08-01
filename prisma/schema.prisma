@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -23,5 +22,12 @@ model Product {
   category String
   favorite Boolean @default(false)
   imageUrl String?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id Int @id@default(autoincrement())
+  name String
+  senha String
   createdAt DateTime @default(now())
 }
