@@ -24,10 +24,3 @@ model Product {
   imageUrl String?
   createdAt DateTime @default(now())
 }
-
-model User {
-  id Int @id@default(autoincrement())
-  name String
-  senha String
-  createdAt DateTime @default(now())
-}
