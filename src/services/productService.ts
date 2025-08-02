@@ -64,8 +64,18 @@ export const productService = {
     if (!product){
         throw {status: 404, message: "Produto não encontrado"}
     }
-    const newValue = favorite?? !product.favorite
+    const newValue = favorite ?? !product.favorite
 
-    return await productRepository.update(id, {...product, favorite: newValue})
+    const updateData = {
+      ...product,
+      favorite: newValue,
+      description: product.description ?? undefined,
+      imageUrl: product.imageUrl ?? undefined,
+    };
+
+    return await productRepository.update(id, updateData)
+  },
+  findFavorites: async () => {
+    return await productRepository.findFavorites();
   },
 };

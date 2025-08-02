@@ -20,5 +20,11 @@ export const productRepository = {
 
     delete: async (id: number) => {
         return await prisma.product.delete({ where: { id } })
-    }
+    },
+
+    findFavorites: async () => {
+        return await prisma.product.findMany({
+            where: { favorite: true },
+        });
+    },
 }
