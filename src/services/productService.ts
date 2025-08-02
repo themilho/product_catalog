@@ -75,6 +75,7 @@ export const productService = {
 
     return await productRepository.update(id, updateData)
   },
+  
   findFavorites: async () => {
     return await productRepository.findFavorites();
   },
