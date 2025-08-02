@@ -19,7 +19,9 @@ export const productService = {
     }
   },
 
-  findAll: () => productRepository.findAll(),
+  findAll: async () => {
+    return await productRepository.findAll()
+  },
 
   findById: async (id: number) => {
     const product= await productRepository.findById(id);
