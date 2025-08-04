@@ -1,7 +1,6 @@
 {
   "version": 2,
   "env": {
-    "DATABASE_URL": "@database_url",
     "PORT": "3002"
   },
   "functions": {
