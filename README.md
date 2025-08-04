@@ -1,6 +1,6 @@
 # 🛍️ Catálogo de Produtos - Backend
 
-API REST para sistema de catálogo de produtos construída com Node.js, Express, TypeScript e Prisma. Oferece autenticação JWT e operações CRUD completas para produtos.
+API REST para sistema de catálogo de produtos construída com Node.js, Express, TypeScript e Prisma. Oferece operações CRUD completas para produtos.
 
 ## 🚀 Tecnologias Utilizadas
 
@@ -8,9 +8,7 @@ API REST para sistema de catálogo de produtos construída com Node.js, Express,
 - **Express.js** - Framework web
 - **TypeScript** - Tipagem estática
 - **Prisma** - ORM moderno
-- **SQLite** - Banco de dados
-- **JWT** - Autenticação via tokens
-- **bcrypt** - Hash de senhas
+- **PostgreSQL** - Banco de dados
 - **CORS** - Controle de acesso
 
 ## 📋 Pré-requisitos
@@ -58,58 +56,68 @@ A API estará rodando em [http://localhost:3002](http://localhost:3002)
 
 ```
 src/
-├── routes/                # Rotas da API
-│   ├── authRoutes.ts      # Rotas de autenticação
-│   └── productRoutes.ts   # Rotas de produtos
-├── middleware/            # Middlewares
-│   └── auth.ts           # Middleware de autenticação JWT
-├── types/                # Definições de tipos
-│   └── express.d.ts      # Extensões do Express
+├── controllers/           # Controladores da API
+│   ├── productController.ts  # Controlador de produtos
+│   └── listsController.ts    # Controlador de listas
+├── lib/                  # Bibliotecas e configurações
+│   └── prisma.ts         # Cliente Prisma
+├── middlewares/          # Middlewares
+│   └── errorHandler.ts   # Middleware de tratamento de erros
+├── repositories/         # Camada de acesso aos dados
+│   └── productRepository.ts # Repository de produtos
+├── routes/               # Rotas da API
+│   ├── indexRoutes.ts    # Roteador principal
+│   ├── productRoutes.ts  # Rotas de produtos
+│   └── listsRoutes.ts    # Rotas de listas
+├── schema/               # Schemas de validação
+│   └── productSchema.ts  # Schema de produtos
+├── services/             # Lógica de negócio
+│   └── productService.ts # Serviços de produtos
 └── index.ts              # Arquivo principal do servidor
 
 prisma/
 ├── schema.prisma         # Schema do banco de dados
-├── migrations/           # Migrações do banco
-└── dev.db               # Banco SQLite (gerado)
+└── migrations/           # Migrações do banco
+    ├── 20250730213816_init/
+    ├── 20250804011240_add_user_model/
+    └── migration_lock.toml
+
+dist/                     # Código compilado
+generated/                # Arquivos gerados automaticamente
 ```
 
-## 🔐 Endpoints de Autenticação
+## 🏥 Endpoint de Saúde
 
-### POST `/auth/register`
-Cadastro de novo usuário
+### GET `/health`
+Verifica se a API está funcionando
 ```json
 {
-  "name": "João Silva",
-  "email": "joao@email.com",
-  "password": "senha123"
+  "status": "OK",
+  "message": "API is running"
 }
-```
-
-### POST `/auth/login`
-Login de usuário
-```json
-{
-  "email": "joao@email.com",
-  "password": "senha123"
-}
-```
-
-### GET `/auth/me`
-Obter dados do usuário logado (requer token)
-```
-Headers: Authorization: Bearer <token>
 ```
 
 ## 📦 Endpoints de Produtos
 
-### GET `/products`
-Listar todos os produtos (requer autenticação)
-```
-Headers: Authorization: Bearer <token>
+### GET `/api/products`
+Listar todos os produtos
+```json
+[
+  {
+    "id": 1,
+    "name": "Produto Exemplo",
+    "description": "Descrição do produto",
+    "price": 99.99,
+    "imageUrl": "https://exemplo.com/imagem.jpg",
+    "isFavorite": false,
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  }
+]
 ```
 
-### POST `/products`
-Criar novo produto (requer autenticação)
+### POST `/api/products`
+Criar novo produto
 ```json
 {
   "name": "Produto Exemplo",
@@ -119,8 +127,11 @@ Criar novo produto (requer autenticação)
 }
 ```
 
-### PUT `/products/:id`
-Atualizar produto (requer autenticação)
+### GET `/api/products/:id`
+Buscar produto por ID
+
+### PUT `/api/products/:id`
+Atualizar produto
 ```json
 {
   "name": "Produto Atualizado",
@@ -130,63 +141,33 @@ Atualizar produto (requer autenticação)
 }
 ```
 
-### DELETE `/products/:id`
-Deletar produto (requer autenticação)
+### DELETE `/api/products/:id`
+Deletar produto
 
-### POST `/products/:id/favorite`
-Marcar/desmarcar produto como favorito (requer autenticação)
+### PUT `/api/products/:id/favorite`
+Marcar/desmarcar produto como favorito
 
 ## 🗄️ Modelo de Dados
-
-### User
-```prisma
-model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String
-  password  String
-  products  Product[]
-  favorites UserFavorite[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-}
-```
 
 ### Product
 ```prisma
 model Product {
-  id          Int            @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String?
   price       Float
   imageUrl    String?
-  userId      Int
-  user        User           @relation(fields: [userId], references: [id])
-  favorites   UserFavorite[]
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
-}
-```
-
-### UserFavorite
-```prisma
-model UserFavorite {
-  id        Int     @id @default(autoincrement())
-  userId    Int
-  productId Int
-  user      User    @relation(fields: [userId], references: [id])
-  product   Product @relation(fields: [productId], references: [id])
-  
-  @@unique([userId, productId])
+  isFavorite  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 ```
 
 ## 🔒 Segurança
 
-- **Senhas**: Hash com bcrypt (salt rounds: 10)
-- **JWT**: Tokens com expiração configurável
 - **CORS**: Configurado para frontend (localhost:3000)
-- **Validação**: Middleware de autenticação em rotas protegidas
+- **Validação**: Middleware de tratamento de erros global
+
 
 ## 📱 Scripts Disponíveis
 
@@ -194,27 +175,15 @@ model UserFavorite {
 npm run dev          # Executa em modo desenvolvimento
 npm run build        # Compila TypeScript
 npm run start        # Executa versão compilada
-npm run prisma:generate  # Gera cliente Prisma
-npm run prisma:migrate   # Executa migrações
-npm run prisma:studio    # Abre Prisma Studio
 ```
 
 ## 🔧 Variáveis de Ambiente
 
 Crie um arquivo `.env` na raiz do projeto:
 ```env
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="seu_jwt_secret_aqui"
+DATABASE_URL="postgresql://usuario:senha@host:porta/database"
 PORT=3002
 ```
-
-## 🚀 Deploy
-
-Para deploy em produção:
-1. Configure variáveis de ambiente
-2. Use PostgreSQL ou MySQL em produção
-3. Execute `npm run build`
-4. Configure processo PM2 ou similar
 
 ## 🔗 Integração com Frontend
 
