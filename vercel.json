@@ -4,7 +4,7 @@
     "PORT": "3002"
   },
   "functions": {
-    "src/index.ts": {
+    "api/index.ts": {
       "maxDuration": 30
     }
   }

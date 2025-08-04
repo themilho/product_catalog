@@ -4,9 +4,9 @@
   "description": "A product catalog where you can list your products and favorite them",
   "main": "dist/index.js",
   "scripts": {
-    "start": "tsx src/index.ts",
-    "dev": "tsx --watch src/index.ts",
-    "build": "rimraf dist && tsup src/index.ts --format cjs,esm --dts --minify"
+    "start": "tsx api/index.ts",
+    "dev": "tsx --watch api/index.ts",
+    "build": "rimraf dist && tsup api/index.ts --format cjs,esm --dts --minify"
   },
   "repository": {
     "type": "git",
