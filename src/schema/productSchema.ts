@@ -6,7 +6,7 @@ export const ProductSchema = z.object({
     price: z.number().positive(),
     category: z.string().min(1), 
     favorite: z.boolean().optional(),
-    imageUrl: z.string().url().optional(),
+    imageUrl: z.union([z.string().url(), z.literal("")]).optional(),
 });
 
 export type productInput = z.infer<typeof ProductSchema>;
