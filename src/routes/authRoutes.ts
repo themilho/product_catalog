@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({ error: 'User already exists' });
+      return res.status(400).json({ error: 'Usuário existente' });
     }
 
     // Hash password
@@ -42,7 +42,7 @@ router.post('/register', async (req, res) => {
     );
 
     res.status(201).json({
-      message: 'User created successfully',
+      message: 'Usuário criado com sucesso!',
       token,
       user: {
         id: user.id,
@@ -51,7 +51,7 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Erro no registro:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
     );
 
     res.json({
-      message: 'Login successful',
+      message: 'Sucesso ao logar',
       token,
       user: {
         id: user.id,
