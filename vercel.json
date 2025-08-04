@@ -1,8 +1,7 @@
 {
   "version": 2,
   "env": {
-    "PORT": "3002",
-    "DATABASE_URL": "@database_url"
+    "PORT": "3002"
   },
   "functions": {
     "api/index.ts": {
