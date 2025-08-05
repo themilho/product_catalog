@@ -10,14 +10,8 @@ dotenv.config();
 const app = express();
 
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://product-catalog-frontend-cxywrfl5c-emiliano-dantas-projects.vercel.app',
-    'https://mayastore-catalogo.vercel.app'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  origin: '*', // Permite qualquer origem
+  credentials: false
 }));
 app.use(express.json());
 app.use('/', router);
